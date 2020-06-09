@@ -36,4 +36,12 @@ estaSaludable :: Gimnasta -> Bool
 estaSaludable gimnasta = (not.estaObeso) gimnasta && tonificacion gimnasta > 5
 
 
+-- Punto 2)
 
+quemarCalorias :: Gimnasta -> Float -> Gimnasta
+quemarCalorias gimnasta calorias | estaObeso gimnasta = gimnasta {peso = bajarPeso gimnasta (calorias/150)} 
+                                 | (not.estaObeso) gimnasta && edad gimnasta > 30 && calorias < 200 = gimnasta {peso = bajarPeso gimnasta 1}
+                                 | otherwise = gimnasta {peso = bajarPeso gimnasta (calorias / (peso gimnasta * edad gimnasta))}
+
+bajarPeso :: Gimnasta -> Float -> Float
+bajarPeso gimnasta cantidad = peso gimnasta - cantidad
