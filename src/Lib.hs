@@ -85,3 +85,49 @@ primeraColina inclinacion minutos = colina inclinacion (minutos / 2)
 
 segundaColina :: Float -> Ejercicio
 segundaColina inclinacion minutos = colina (inclinacion + 3) (minutos / 2)
+
+
+-- Punto 4)
+
+data Rutina = UnaRutina {
+    nombre :: String,
+    duracion :: Float,
+    ejercicios :: [Ejercicio]
+}
+
+realizarRutinaFold :: Rutina -> Gimnasta -> Gimnasta
+realizarRutinaFold rutina gimnasta = foldl ((realizarEjercicio.tiempoPorEjercicio) rutina) gimnasta (ejercicios rutina)
+
+realizarEjercicio :: Minuto -> Gimnasta -> Ejercicio -> Gimnasta
+realizarEjercicio minutos gimnasta ejercicio = ejercicio minutos gimnasta
+
+realizarRutinaRecursiva :: Rutina -> Gimnasta -> Gimnasta
+realizarRutinaRecursiva rutina = ejercitar (ejercicios rutina) (tiempoPorEjercicio rutina) 
+
+ejercitar [] _ gimnasta = gimnasta
+ejercitar (ejercicio:ejercicios) minutos gimnasta = ejercitar ejercicios minutos (ejercicio minutos gimnasta)
+
+tiempoPorEjercicio :: Rutina -> Minuto
+tiempoPorEjercicio rutina = (duracion rutina) / genericLength (ejercicios rutina)
+
+type Nombre = String
+type Peso = Float
+type Tonificacion = Float
+
+rutinaCorta = UnaRutina {
+    nombre = "Liviana",
+    duracion = 30,
+    ejercicios = [caminata,caminata]
+}
+
+
+resumenRutina :: Rutina -> Gimnasta -> (Nombre,Peso,Tonificacion)
+resumenRutina rutina gimnasta = (nombre rutina,kilosPerdidos gimnasta rutina , tonificacionGanada gimnasta rutina)
+
+kilosPerdidos :: Gimnasta -> Rutina -> Float
+kilosPerdidos gimnasta rutina = peso gimnasta - (peso.realizarRutinaFold rutina) gimnasta
+
+tonificacionGanada :: Gimnasta -> Rutina -> Float
+tonificacionGanada gimnasta rutina = (tonificacion.realizarRutinaFold rutina) gimnasta - tonificacion gimnasta
+
+
